@@ -1,8 +1,8 @@
-access_control
+# access_control
 
 Check access control via permissions
 
-![Access control demo image](https://github.com/karbunkul/flutter_access_control/blob/master/resources/demo.gif?raw=true "Access control")
+![Access control demo image](https://github.com/karbunkul/flutter_access_control/blob/main/resources/demo.gif?raw=true "Access control")
 
 ## Getting started
 
