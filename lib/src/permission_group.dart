@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
 
-import 'permission_interface.dart';
+import 'permission.dart';
 
 abstract class PermissionGroup {
-  final List<IPermission> permissions;
+  final List<Permission> permissions;
 
   PermissionGroup(this.permissions);
 
@@ -18,6 +18,17 @@ class Not extends PermissionGroup {
   @override
   Future<bool> resolve(BuildContext context) async {
     return !(await group.resolve(context));
+  }
+}
+
+class Single extends PermissionGroup {
+  final Permission permission;
+
+  Single(this.permission) : super([]);
+
+  @override
+  Future<bool> resolve(BuildContext context) async {
+    return permission.request(context);
   }
 }
 

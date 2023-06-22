@@ -87,19 +87,19 @@ class DemoPage extends StatefulWidget {
   State<DemoPage> createState() => _DemoPageState();
 }
 
-class DeveloperPermission extends IPermission {
+class DeveloperPermission implements Permission {
   @override
   FutureOr<bool> request(BuildContext context) =>
       PermissionModel.isDeveloperOf(context);
 }
 
-class AuthPermission extends IPermission {
+class AuthPermission implements Permission {
   @override
   FutureOr<bool> request(BuildContext context) =>
       PermissionModel.isAuthorizedOf(context);
 }
 
-class DarkThemePermission extends IPermission {
+class DarkThemePermission implements Permission {
   @override
   FutureOr<bool> request(BuildContext context) =>
       PermissionModel.isDarkThemeOf(context);
@@ -168,10 +168,17 @@ class _DemoPageState extends State<DemoPage> {
               ),
               AccessControl.permissions(
                 groups: [
-                  Not(Any([DeveloperPermission(), DarkThemePermission()])),
-                  Every([AuthPermission()])
+                  Not(
+                    Any([
+                      DeveloperPermission(),
+                      DarkThemePermission(),
+                    ]),
+                  ),
+                  Single(
+                    Reverse(Reverse(AuthPermission())),
+                  ),
                 ],
-                mode: ControlMode.any,
+                mode: ControlMode.every,
                 child: const Text('Cool'),
               ),
               AccessControl.every(

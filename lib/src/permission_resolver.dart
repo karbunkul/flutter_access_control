@@ -1,27 +1,27 @@
 import 'package:access_control/src/control_mode.dart';
 import 'package:flutter/cupertino.dart';
 
+import 'permission.dart';
 import 'permission_group.dart';
-import 'permission_interface.dart';
 
 class PermissionResolver {
   static Future<bool> permission(
     BuildContext context, {
-    required IPermission permission,
+    required Permission permission,
   }) async {
     return permission.request(context);
   }
 
   static Future<bool> every(
     BuildContext context, {
-    required List<IPermission> permissions,
+    required List<Permission> permissions,
   }) {
     return Every(permissions).resolve(context);
   }
 
   static Future<bool> any(
     BuildContext context, {
-    required List<IPermission> permissions,
+    required List<Permission> permissions,
   }) {
     return Any(permissions).resolve(context);
   }

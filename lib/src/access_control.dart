@@ -1,6 +1,6 @@
 import 'package:access_control/src/control_mode.dart';
+import 'package:access_control/src/permission.dart';
 import 'package:access_control/src/permission_group.dart';
-import 'package:access_control/src/permission_interface.dart';
 import 'package:access_control/src/permission_resolver.dart';
 import 'package:flutter/widgets.dart';
 
@@ -8,14 +8,14 @@ abstract class AccessControl extends StatelessWidget {
   const AccessControl({
     super.key,
     required Widget child,
-    required List<IPermission> permissions,
+    required List<Permission> permissions,
     Widget? denied,
   });
 
   @Deprecated('Use AccessControl.permission instead')
   factory AccessControl.single({
     Key? key,
-    required IPermission permission,
+    required Permission permission,
     required Widget child,
     Widget? denied,
   }) {
@@ -30,7 +30,7 @@ abstract class AccessControl extends StatelessWidget {
   @Deprecated('Use PermissionResolver.permission instead')
   static Future<bool> check(
     BuildContext context,
-    IPermission permission,
+    Permission permission,
   ) {
     return PermissionResolver.permission(
       context,
@@ -41,7 +41,7 @@ abstract class AccessControl extends StatelessWidget {
   @Deprecated('Use PermissionResolver.permissions instead')
   static Future<bool> checkMany(
     BuildContext context,
-    List<IPermission> permissions,
+    List<Permission> permissions,
   ) {
     return PermissionResolver.every(
       context,
@@ -52,7 +52,7 @@ abstract class AccessControl extends StatelessWidget {
   /// Validate single permission
   factory AccessControl.permission({
     Key? key,
-    required IPermission permission,
+    required Permission permission,
     required Widget child,
     Widget? denied,
   }) {
@@ -72,7 +72,7 @@ abstract class AccessControl extends StatelessWidget {
   /// Validate all permissions
   factory AccessControl.every({
     Key? key,
-    required List<IPermission> permissions,
+    required List<Permission> permissions,
     required Widget child,
     Widget? denied,
   }) {
@@ -92,7 +92,7 @@ abstract class AccessControl extends StatelessWidget {
   /// Validate one of permissions
   factory AccessControl.any({
     Key? key,
-    required List<IPermission> permissions,
+    required List<Permission> permissions,
     required Widget child,
     Widget? denied,
   }) {

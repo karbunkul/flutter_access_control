@@ -1,4 +1,4 @@
-import 'package:access_control/src/permission_interface.dart';
+import 'package:access_control/src/permission.dart';
 import 'package:access_control/src/permission_resolver.dart';
 import 'package:flutter/widgets.dart';
 
@@ -6,7 +6,7 @@ typedef AccessBuilder = Widget Function(BuildContext context, bool value);
 
 class AccessControlBuilder extends StatefulWidget {
   final AccessBuilder builder;
-  final List<IPermission> permissions;
+  final List<Permission> permissions;
 
   const AccessControlBuilder({
     required this.builder,

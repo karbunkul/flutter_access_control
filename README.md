@@ -13,7 +13,7 @@ Add package to your project ```flutter pub add access_control```.
 Create permission (implements PermissionInterface)
 
 ```dart
-class DeveloperPermission extends PermissionInterface {
+class DeveloperPermission extends Permission {
   final bool developer;
 
   DeveloperPermission(this.developer);
@@ -45,7 +45,7 @@ class _DemoPageState extends State<DemoPage> {
     return Scaffold(
       appBar: AppBar(title: const Text('Access control')),
       body: Center(
-        child: AccessControl.single(
+        child: AccessControl.permission(
           child: const Text('Developer workspace'),
           denied: const Text('Access denied'),
           permission: DeveloperPermission(developer),
