@@ -1,48 +1,156 @@
+import 'package:access_control/src/control_mode.dart';
+import 'package:access_control/src/permission_group.dart';
 import 'package:access_control/src/permission_interface.dart';
+import 'package:access_control/src/permission_resolver.dart';
 import 'package:flutter/widgets.dart';
 
-class AccessControl extends StatelessWidget {
-  final Widget child;
-  final Widget? denied;
-  final List<PermissionInterface> permissions;
-
+abstract class AccessControl extends StatelessWidget {
   const AccessControl({
-    Key? key,
-    required this.child,
-    required this.permissions,
-    this.denied,
-  })  : assert(permissions.length > 0),
-        super(key: key);
+    super.key,
+    required Widget child,
+    required List<IPermission> permissions,
+    Widget? denied,
+  });
 
+  @Deprecated('Use AccessControl.permission instead')
+  factory AccessControl.single({
+    Key? key,
+    required IPermission permission,
+    required Widget child,
+    Widget? denied,
+  }) {
+    return AccessControl.permission(
+      key: key,
+      permission: permission,
+      denied: denied,
+      child: child,
+    );
+  }
+
+  @Deprecated('Use PermissionResolver.permission instead')
   static Future<bool> check(
     BuildContext context,
-    PermissionInterface permission,
-  ) async {
-    return await permission.request(context);
+    IPermission permission,
+  ) {
+    return PermissionResolver.permission(
+      context,
+      permission: permission,
+    );
   }
 
+  @Deprecated('Use PermissionResolver.permissions instead')
   static Future<bool> checkMany(
     BuildContext context,
-    List<PermissionInterface> permissions,
-  ) async {
-    if (permissions.length > 1) {
-      var res = await Future.wait(permissions.map((e) {
-        return AccessControl.check(context, e);
-      }));
-
-      return res.firstWhere(
-        (element) => element == false,
-        orElse: () => true,
-      );
-    }
-
-    return AccessControl.check(context, permissions[0]);
+    List<IPermission> permissions,
+  ) {
+    return PermissionResolver.every(
+      context,
+      permissions: permissions,
+    );
   }
+
+  /// Validate single permission
+  factory AccessControl.permission({
+    Key? key,
+    required IPermission permission,
+    required Widget child,
+    Widget? denied,
+  }) {
+    return _AccessControl(
+      key: key,
+      request: (context) {
+        return PermissionResolver.permission(
+          context,
+          permission: permission,
+        );
+      },
+      denied: denied,
+      child: child,
+    );
+  }
+
+  /// Validate all permissions
+  factory AccessControl.every({
+    Key? key,
+    required List<IPermission> permissions,
+    required Widget child,
+    Widget? denied,
+  }) {
+    return _AccessControl(
+      key: key,
+      request: (context) {
+        return PermissionResolver.every(
+          context,
+          permissions: permissions,
+        );
+      },
+      denied: denied,
+      child: child,
+    );
+  }
+
+  /// Validate one of permissions
+  factory AccessControl.any({
+    Key? key,
+    required List<IPermission> permissions,
+    required Widget child,
+    Widget? denied,
+  }) {
+    return _AccessControl(
+      key: key,
+      request: (context) {
+        return PermissionResolver.any(
+          context,
+          permissions: permissions,
+        );
+      },
+      denied: denied,
+      child: child,
+    );
+  }
+
+  /// Validate permission groups
+  factory AccessControl.permissions({
+    Key? key,
+    required List<PermissionGroup> groups,
+    required ControlMode mode,
+    required Widget child,
+    Widget? denied,
+  }) {
+    return _AccessControl(
+      key: key,
+      request: (context) {
+        return PermissionResolver.permissions(
+          context,
+          groups: groups,
+          mode: mode,
+        );
+      },
+      denied: denied,
+      child: child,
+    );
+  }
+}
+
+typedef _RequestCallback = Future<bool> Function(BuildContext context);
+
+class _AccessControl extends StatelessWidget implements AccessControl {
+  final Widget child;
+  final Widget? denied;
+  final _RequestCallback request;
+
+  const _AccessControl({
+    super.key,
+    required this.child,
+    required this.request,
+    this.denied,
+  });
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<bool>(
-      future: AccessControl.checkMany(context, permissions),
+      key: key,
+      future: request(context),
       builder: (_, snap) {
         if (snap.hasData) {
           return snap.data! ? child : denied ?? const SizedBox();
@@ -50,20 +158,8 @@ class AccessControl extends StatelessWidget {
           throw Exception(snap.error.toString());
         }
 
-        return Container();
+        return const SizedBox();
       },
-    );
-  }
-
-  factory AccessControl.single({
-    required Widget child,
-    Widget? denied,
-    required PermissionInterface permission,
-  }) {
-    return AccessControl(
-      child: child,
-      permissions: [permission],
-      denied: denied,
     );
   }
 }
