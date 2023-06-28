@@ -1,6 +1,6 @@
 import 'package:access_control/src/control_mode.dart';
 import 'package:access_control/src/permission.dart';
-import 'package:access_control/src/permission_group.dart';
+import 'package:access_control/src/permission_predicate.dart';
 import 'package:access_control/src/permission_resolver.dart';
 import 'package:flutter/widgets.dart';
 
@@ -112,7 +112,7 @@ abstract class AccessControl extends StatelessWidget {
   /// Validate permission groups
   factory AccessControl.permissions({
     Key? key,
-    required List<PermissionGroup> groups,
+    required List<PermissionPredicate> predicates,
     required ControlMode mode,
     required Widget child,
     Widget? denied,
@@ -122,7 +122,7 @@ abstract class AccessControl extends StatelessWidget {
       request: (context) {
         return PermissionResolver.permissions(
           context,
-          groups: groups,
+          predicates: predicates,
           mode: mode,
         );
       },

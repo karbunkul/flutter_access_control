@@ -1,8 +1,8 @@
 import 'package:access_control/src/control_mode.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/widgets.dart';
 
 import 'permission.dart';
-import 'permission_group.dart';
+import 'permission_predicate.dart';
 
 class PermissionResolver {
   static Future<bool> permission(
@@ -28,10 +28,10 @@ class PermissionResolver {
 
   static Future<bool> permissions(
     BuildContext context, {
-    required List<PermissionGroup> groups,
+    required List<PermissionPredicate> predicates,
     ControlMode mode = ControlMode.every,
   }) async {
-    final res = await Future.wait(groups.map((group) async {
+    final res = await Future.wait(predicates.map((group) async {
       return group.resolve(context);
     }));
 
@@ -39,7 +39,7 @@ class PermissionResolver {
 
     switch (mode) {
       case ControlMode.every:
-        return sum == groups.length;
+        return sum == predicates.length;
       case ControlMode.any:
         return sum > 0;
     }

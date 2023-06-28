@@ -145,6 +145,7 @@ class _DemoPageState extends State<DemoPage> {
           ),
           body: Column(
             children: [
+              Text(_developer ? 'Developer' : 'User'),
               const SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -167,7 +168,7 @@ class _DemoPageState extends State<DemoPage> {
                 ),
               ),
               AccessControl.permissions(
-                groups: [
+                predicates: [
                   Not(
                     Any([
                       DeveloperPermission(),
@@ -175,7 +176,7 @@ class _DemoPageState extends State<DemoPage> {
                     ]),
                   ),
                   Single(
-                    Reverse(Reverse(AuthPermission())),
+                    Reverse(AuthPermission()),
                   ),
                 ],
                 mode: ControlMode.every,

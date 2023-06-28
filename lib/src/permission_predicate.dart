@@ -2,16 +2,16 @@ import 'package:flutter/widgets.dart';
 
 import 'permission.dart';
 
-abstract class PermissionGroup {
+abstract class PermissionPredicate {
   final List<Permission> permissions;
 
-  PermissionGroup(this.permissions);
+  PermissionPredicate(this.permissions);
 
   Future<bool> resolve(BuildContext context);
 }
 
-class Not extends PermissionGroup {
-  final PermissionGroup group;
+class Not extends PermissionPredicate {
+  final PermissionPredicate group;
 
   Not(this.group) : super([]);
 
@@ -21,7 +21,7 @@ class Not extends PermissionGroup {
   }
 }
 
-class Single extends PermissionGroup {
+class Single extends PermissionPredicate {
   final Permission permission;
 
   Single(this.permission) : super([]);
@@ -32,11 +32,15 @@ class Single extends PermissionGroup {
   }
 }
 
-class Every extends PermissionGroup {
+class Every extends PermissionPredicate {
   Every(super.permissions);
 
   @override
   Future<bool> resolve(BuildContext context) async {
+    if (permissions.isEmpty) {
+      return true;
+    }
+
     final res = await Future.wait(permissions.map((permission) async {
       return permission.request(context);
     }));
@@ -45,11 +49,15 @@ class Every extends PermissionGroup {
   }
 }
 
-class Any extends PermissionGroup {
+class Any extends PermissionPredicate {
   Any(super.permissions);
 
   @override
   Future<bool> resolve(BuildContext context) async {
+    if (permissions.isEmpty) {
+      return true;
+    }
+
     final res = await Future.wait(permissions.map((permission) async {
       return permission.request(context);
     }));
