@@ -21,60 +21,64 @@ class AccessControlRequest extends StatefulWidget {
 }
 
 class _AccessControlRequestState extends State<AccessControlRequest> {
-  var _lastRebuild = DateTime.now();
-
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback(_postFrame);
+    WidgetsBinding.instance.addPostFrameCallback((_) => _activate());
     super.initState();
   }
 
   @override
-  void dispose() {
-    _dispose();
-    super.dispose();
+  void activate() {
+    _activate();
+    super.activate();
+  }
+
+  @override
+  void deactivate() {
+    _deactivate();
+    super.deactivate();
+  }
+
+  @override
+  void didUpdateWidget(covariant AccessControlRequest oldWidget) {
+    _deactivate();
+    _activate();
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
   Widget build(BuildContext context) {
-    return KeyedSubtree(
-      // key: ValueKey(_lastRebuild),
-      child: FutureBuilder<bool>(
-        future: widget.request(context),
-        builder: (_, snap) {
-          if (snap.hasData) {
-            return snap.data!
-                ? widget.child
-                : widget.denied ?? const SizedBox();
-          } else if (snap.hasError) {
-            throw Exception(snap.error.toString());
-          }
+    return FutureBuilder<bool>(
+      future: widget.request(context),
+      builder: (_, snap) {
+        if (snap.hasData) {
+          return snap.data! ? widget.child : widget.denied ?? const SizedBox();
+        } else if (snap.hasError) {
+          throw Exception(snap.error.toString());
+        }
 
-          return const SizedBox();
-        },
-      ),
+        return const SizedBox();
+      },
     );
   }
 
   void _listener() {
     if (mounted) {
-      setState(() {
-        _lastRebuild = DateTime.now();
-      });
+      setState(() {});
     }
   }
 
-  void _postFrame(Duration timeStamp) {
-    final scope = AccessControlReloadScope.maybeOf(context);
-    if (scope != null) {
-      scope.addListener(_listener);
-    }
-  }
-
-  void _dispose() {
+  void _deactivate() {
     final scope = AccessControlReloadScope.maybeOf(context);
     if (scope != null) {
       scope.removeListener(_listener);
+    }
+  }
+
+  void _activate() {
+    final scope = AccessControlReloadScope.maybeOf(context);
+    if (scope != null) {
+      scope.addListener(_listener);
     }
   }
 }
