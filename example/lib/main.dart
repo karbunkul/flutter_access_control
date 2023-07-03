@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:access_control/access_control.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,14 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => const MaterialApp(home: DemoPage());
+  Widget build(BuildContext context) => MaterialApp(
+        home: const DemoPage(),
+        builder: (_, child) {
+          return AccessControlReload(
+            child: child ?? const SizedBox(),
+          );
+        },
+      );
 }
 
 enum PermissionAspect { theme, auth, develop }
@@ -105,6 +113,13 @@ class DarkThemePermission implements Permission {
       PermissionModel.isDarkThemeOf(context);
 }
 
+class RandomPermission implements Permission {
+  @override
+  FutureOr<bool> request(BuildContext context) {
+    return Random().nextBool();
+  }
+}
+
 class ThemeButton extends StatelessWidget {
   final VoidCallback onTap;
   const ThemeButton({super.key, required this.onTap});
@@ -154,6 +169,14 @@ class _DemoPageState extends State<DemoPage> {
                   child: Column(
                     children: [
                       const FlutterLogo(size: 96),
+                      ListTile(
+                        title: Text(
+                          DateTime.now().microsecondsSinceEpoch.toString(),
+                        ),
+                        onTap: () {
+                          AccessControlReload.reload(context);
+                        },
+                      ),
                       const SizedBox(height: 16),
                       ElevatedButton(
                         child: const Center(child: Text('Logout')),
@@ -166,6 +189,11 @@ class _DemoPageState extends State<DemoPage> {
                     onPressed: () => setState(() => _authorized = true),
                   ),
                 ),
+              ),
+              AccessControl.permission(
+                permission: RandomPermission(),
+                child: const Text('true'),
+                denied: const Text('false'),
               ),
               AccessControl.permissions(
                 predicates: [
@@ -183,7 +211,9 @@ class _DemoPageState extends State<DemoPage> {
                 child: const Text('Cool'),
               ),
               AccessControl.every(
-                child: const Text('Developers love dark themes'),
+                child: Builder(builder: (context) {
+                  return const Text('Developers love dark themes');
+                }),
                 permissions: [
                   AuthPermission(),
                   DeveloperPermission(),

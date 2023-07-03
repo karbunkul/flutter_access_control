@@ -1,3 +1,4 @@
+import 'package:access_control/src/access_control_request.dart';
 import 'package:access_control/src/control_mode.dart';
 import 'package:access_control/src/permission.dart';
 import 'package:access_control/src/permission_predicate.dart';
@@ -148,18 +149,24 @@ class _AccessControl extends StatelessWidget implements AccessControl {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<bool>(
-      key: key,
-      future: request(context),
-      builder: (_, snap) {
-        if (snap.hasData) {
-          return snap.data! ? child : denied ?? const SizedBox();
-        } else if (snap.hasError) {
-          throw Exception(snap.error.toString());
-        }
-
-        return const SizedBox();
-      },
+    return AccessControlRequest(
+      request: request,
+      denied: denied,
+      child: child,
     );
+
+    // return FutureBuilder<bool>(
+    //   key: key,
+    //   future: request(context),
+    //   builder: (_, snap) {
+    //     if (snap.hasData) {
+    //       return snap.data! ? child : denied ?? const SizedBox();
+    //     } else if (snap.hasError) {
+    //       throw Exception(snap.error.toString());
+    //     }
+    //
+    //     return const SizedBox();
+    //   },
+    // );
   }
 }

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:access_control/access_control.dart';
-import 'package:access_control/src/permission_resolver.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
