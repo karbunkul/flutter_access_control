@@ -10,14 +10,16 @@ class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => MaterialApp(
-        home: const DemoPage(),
-        builder: (_, child) {
-          return AccessControlReload(
-            child: child ?? const SizedBox(),
-          );
-        },
-      );
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: const DemoPage(),
+      builder: (_, child) {
+        return AccessControlManager(
+          child: child ?? const SizedBox(),
+        );
+      },
+    );
+  }
 }
 
 enum PermissionAspect { theme, auth, develop }
@@ -173,9 +175,7 @@ class _DemoPageState extends State<DemoPage> {
                         title: Text(
                           DateTime.now().microsecondsSinceEpoch.toString(),
                         ),
-                        onTap: () {
-                          AccessControlReload.reload(context);
-                        },
+                        onTap: AccessControlScope.of(context).rebuild,
                       ),
                       const SizedBox(height: 16),
                       ElevatedButton(

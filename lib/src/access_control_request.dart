@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import 'access_control_reload_scope.dart';
+import 'access_control_scope.dart';
 
 typedef RequestCallback = Future<bool> Function(BuildContext context);
 
@@ -21,6 +21,8 @@ class AccessControlRequest extends StatefulWidget {
 }
 
 class _AccessControlRequestState extends State<AccessControlRequest> {
+  DateTime _lastReload = DateTime.now();
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) => _activate());
@@ -52,7 +54,12 @@ class _AccessControlRequestState extends State<AccessControlRequest> {
       future: widget.request(context),
       builder: (_, snap) {
         if (snap.hasData) {
-          return snap.data! ? widget.child : widget.denied ?? const SizedBox();
+          return KeyedSubtree(
+            key: ValueKey(_lastReload),
+            child: snap.data == true
+                ? widget.child
+                : widget.denied ?? const SizedBox(),
+          );
         } else if (snap.hasError) {
           throw Exception(snap.error.toString());
         }
@@ -64,19 +71,19 @@ class _AccessControlRequestState extends State<AccessControlRequest> {
 
   void _listener() {
     if (mounted) {
-      setState(() {});
+      setState(() => _lastReload = DateTime.now());
     }
   }
 
   void _deactivate() {
-    final scope = AccessControlReloadScope.maybeOf(context);
+    final scope = AccessControlScope.maybeOf(context);
     if (scope != null) {
       scope.removeListener(_listener);
     }
   }
 
   void _activate() {
-    final scope = AccessControlReloadScope.maybeOf(context);
+    final scope = AccessControlScope.maybeOf(context);
     if (scope != null) {
       scope.addListener(_listener);
     }

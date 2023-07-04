@@ -2,7 +2,8 @@ library access_control;
 
 export 'src/access_control.dart';
 export 'src/access_control_builder.dart';
-export 'src/access_control_reload.dart';
+export 'src/access_control_manager.dart';
+export 'src/access_control_scope.dart';
 export 'src/control_mode.dart';
 export 'src/permission.dart';
 export 'src/permission_predicate.dart';

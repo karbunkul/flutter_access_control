@@ -154,19 +154,5 @@ class _AccessControl extends StatelessWidget implements AccessControl {
       denied: denied,
       child: child,
     );
-
-    // return FutureBuilder<bool>(
-    //   key: key,
-    //   future: request(context),
-    //   builder: (_, snap) {
-    //     if (snap.hasData) {
-    //       return snap.data! ? child : denied ?? const SizedBox();
-    //     } else if (snap.hasError) {
-    //       throw Exception(snap.error.toString());
-    //     }
-    //
-    //     return const SizedBox();
-    //   },
-    // );
   }
 }
