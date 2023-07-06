@@ -58,15 +58,17 @@ abstract class AccessControl extends StatelessWidget {
     Widget? denied,
   }) {
     return _AccessControl(
-      key: key,
-      request: (context) {
-        return PermissionResolver.permission(
-          context,
-          permission: permission,
-        );
-      },
-      denied: denied,
-      child: child,
+      child: AccessControlRequest(
+        key: key,
+        request: (context) {
+          return PermissionResolver.permission(
+            context,
+            permission: permission,
+          );
+        },
+        denied: denied,
+        child: child,
+      ),
     );
   }
 
@@ -78,15 +80,17 @@ abstract class AccessControl extends StatelessWidget {
     Widget? denied,
   }) {
     return _AccessControl(
-      key: key,
-      request: (context) {
-        return PermissionResolver.every(
-          context,
-          permissions: permissions,
-        );
-      },
-      denied: denied,
-      child: child,
+      child: AccessControlRequest(
+        key: key,
+        request: (context) {
+          return PermissionResolver.every(
+            context,
+            permissions: permissions,
+          );
+        },
+        denied: denied,
+        child: child,
+      ),
     );
   }
 
@@ -98,15 +102,17 @@ abstract class AccessControl extends StatelessWidget {
     Widget? denied,
   }) {
     return _AccessControl(
-      key: key,
-      request: (context) {
-        return PermissionResolver.any(
-          context,
-          permissions: permissions,
-        );
-      },
-      denied: denied,
-      child: child,
+      child: AccessControlRequest(
+        key: key,
+        request: (context) {
+          return PermissionResolver.any(
+            context,
+            permissions: permissions,
+          );
+        },
+        denied: denied,
+        child: child,
+      ),
     );
   }
 
@@ -119,40 +125,29 @@ abstract class AccessControl extends StatelessWidget {
     Widget? denied,
   }) {
     return _AccessControl(
-      key: key,
-      request: (context) {
-        return PermissionResolver.permissions(
-          context,
-          predicates: predicates,
-          mode: mode,
-        );
-      },
-      denied: denied,
-      child: child,
+      child: AccessControlRequest(
+        key: key,
+        request: (context) {
+          return PermissionResolver.permissions(
+            context,
+            predicates: predicates,
+            mode: mode,
+          );
+        },
+        denied: denied,
+        child: child,
+      ),
     );
   }
 }
 
-typedef _RequestCallback = Future<bool> Function(BuildContext context);
-
 class _AccessControl extends StatelessWidget implements AccessControl {
   final Widget child;
-  final Widget? denied;
-  final _RequestCallback request;
 
-  const _AccessControl({
-    super.key,
-    required this.child,
-    required this.request,
-    this.denied,
-  });
+  const _AccessControl({super.key, required this.child});
 
   @override
   Widget build(BuildContext context) {
-    return AccessControlRequest(
-      request: request,
-      denied: denied,
-      child: child,
-    );
+    return child;
   }
 }
