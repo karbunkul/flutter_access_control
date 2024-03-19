@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +91,7 @@ class PermissionModel extends InheritedModel<PermissionAspect> {
 }
 
 class DemoPage extends StatefulWidget {
-  const DemoPage({Key? key}) : super(key: key);
+  const DemoPage({super.key});
 
   @override
   State<DemoPage> createState() => _DemoPageState();
@@ -168,6 +168,10 @@ class _DemoPageState extends State<DemoPage> {
                 padding: const EdgeInsets.all(16.0),
                 child: AccessControl.permission(
                   permission: AuthPermission(),
+                  denied: ElevatedButton(
+                    child: const Center(child: Text('Login')),
+                    onPressed: () => setState(() => _authorized = true),
+                  ),
                   child: Column(
                     children: [
                       const FlutterLogo(size: 96),
@@ -184,16 +188,12 @@ class _DemoPageState extends State<DemoPage> {
                       ),
                     ],
                   ),
-                  denied: ElevatedButton(
-                    child: const Center(child: Text('Login')),
-                    onPressed: () => setState(() => _authorized = true),
-                  ),
                 ),
               ),
               AccessControl.permission(
                 permission: RandomPermission(),
-                child: const Text('true'),
                 denied: const Text('false'),
+                child: const Text('true'),
               ),
               AccessControl.permissions(
                 predicates: [
@@ -211,14 +211,14 @@ class _DemoPageState extends State<DemoPage> {
                 child: const Text('Cool'),
               ),
               AccessControl.every(
-                child: Builder(builder: (context) {
-                  return const Text('Developers love dark themes');
-                }),
                 permissions: [
                   AuthPermission(),
                   DeveloperPermission(),
                   DarkThemePermission(),
                 ],
+                child: Builder(builder: (context) {
+                  return const Text('Developers love dark themes');
+                }),
               ),
             ],
           ),

@@ -10,8 +10,8 @@ class AccessControlScope extends InheritedWidget {
     required this.addListener,
     required this.removeListener,
     required this.rebuild,
-    required Widget child,
-  }) : super(child: child);
+    required super.child,
+  });
 
   static AccessControlScope of(BuildContext context) {
     final AccessControlScope? result =

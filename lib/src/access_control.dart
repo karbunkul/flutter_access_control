@@ -144,7 +144,7 @@ abstract class AccessControl extends StatelessWidget {
 class _AccessControl extends StatelessWidget implements AccessControl {
   final Widget child;
 
-  const _AccessControl({super.key, required this.child});
+  const _AccessControl({required this.child});
 
   @override
   Widget build(BuildContext context) {
