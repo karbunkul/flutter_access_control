@@ -1,11 +1,16 @@
 name: access_control
 description: Check access control via permissions.
-version: 1.0.0
+version: 1.1.0
 repository: https://github.com/karbunkul/flutter_access_control
+topics:
+  - permission
+  - access
+  - control
+
 
 environment:
-  sdk: ">=2.18.0 <4.0.0"
-  flutter: ">=3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.16.0"
 
 dependencies:
   flutter:
@@ -14,8 +19,8 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.1
-  mocktail: ^0.3.0
+  flutter_lints: ^3.0.1
+  mocktail: ^1.0.3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

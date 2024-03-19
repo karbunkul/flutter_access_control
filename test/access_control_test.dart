@@ -7,7 +7,7 @@ import 'package:mocktail/mocktail.dart';
 
 typedef ResolverCallback = Future<bool> Function();
 
-class DevelopmentPermission extends Permission {
+class DevelopmentPermission implements Permission {
   final bool value;
 
   DevelopmentPermission(this.value);
@@ -16,7 +16,7 @@ class DevelopmentPermission extends Permission {
   FutureOr<bool> request(BuildContext context) => value;
 }
 
-class DarkThemePermission extends Permission {
+class DarkThemePermission implements Permission {
   final bool value;
 
   DarkThemePermission(this.value);

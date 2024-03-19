@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +91,7 @@ class PermissionModel extends InheritedModel<PermissionAspect> {
 }
 
 class DemoPage extends StatefulWidget {
-  const DemoPage({Key? key}) : super(key: key);
+  const DemoPage({super.key});
 
   @override
   State<DemoPage> createState() => _DemoPageState();
@@ -168,6 +168,10 @@ class _DemoPageState extends State<DemoPage> {
                 padding: const EdgeInsets.all(16.0),
                 child: AccessControl.permission(
                   permission: AuthPermission(),
+                  denied: ElevatedButton(
+                    child: const Center(child: Text('Login')),
+                    onPressed: () => setState(() => _authorized = true),
+                  ),
                   child: Column(
                     children: [
                       const FlutterLogo(size: 96),
@@ -184,41 +188,46 @@ class _DemoPageState extends State<DemoPage> {
                       ),
                     ],
                   ),
-                  denied: ElevatedButton(
-                    child: const Center(child: Text('Login')),
-                    onPressed: () => setState(() => _authorized = true),
-                  ),
                 ),
               ),
-              AccessControl.permission(
-                permission: RandomPermission(),
-                child: const Text('true'),
-                denied: const Text('false'),
+              _AccessGroup(
+                title: 'Random Permission',
+                child: AccessControl.permission(
+                  permission: RandomPermission(),
+                  denied: const Text('false'),
+                  child: const Text('true'),
+                ),
               ),
-              AccessControl.permissions(
-                predicates: [
-                  Not(
-                    Any([
-                      DeveloperPermission(),
-                      DarkThemePermission(),
-                    ]),
-                  ),
-                  Single(
-                    Reverse(AuthPermission()),
-                  ),
-                ],
-                mode: ControlMode.every,
-                child: const Text('Cool'),
+              _AccessGroup(
+                title: 'Predicade permissions:',
+                child: AccessControl.permissions(
+                  predicates: [
+                    Not(
+                      Any([
+                        DeveloperPermission(),
+                        DarkThemePermission(),
+                      ]),
+                    ),
+                    Single(
+                      Reverse(AuthPermission()),
+                    ),
+                  ],
+                  mode: ControlMode.every,
+                  denied: const Text('Not cool'),
+                  child: const Text('Cool'),
+                ),
               ),
-              AccessControl.every(
-                child: Builder(builder: (context) {
-                  return const Text('Developers love dark themes');
-                }),
-                permissions: [
-                  AuthPermission(),
-                  DeveloperPermission(),
-                  DarkThemePermission(),
-                ],
+              _AccessGroup(
+                title: 'Every permissions:',
+                child: AccessControl.every(
+                  permissions: [
+                    AuthPermission(),
+                    DeveloperPermission(),
+                    DarkThemePermission(),
+                  ],
+                  denied: const Text('Someone doesn\'t like dark themes'),
+                  child: const Text('Developers love dark themes'),
+                ),
               ),
             ],
           ),
@@ -230,6 +239,32 @@ class _DemoPageState extends State<DemoPage> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _AccessGroup extends StatelessWidget {
+  final String title;
+  final Widget child;
+
+  const _AccessGroup({
+    super.key,
+    required this.title,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          title,
+          style: Theme.of(context).textTheme.labelLarge,
+        ),
+        const SizedBox(height: 8),
+        child,
+        const SizedBox(height: 8),
+      ],
     );
   }
 }

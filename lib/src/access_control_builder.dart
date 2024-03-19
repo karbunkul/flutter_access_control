@@ -11,8 +11,8 @@ class AccessControlBuilder extends StatefulWidget {
   const AccessControlBuilder({
     required this.builder,
     required this.permissions,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<AccessControlBuilder> createState() => _AccessControlBuilderState();
