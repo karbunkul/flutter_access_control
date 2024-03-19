@@ -21,8 +21,6 @@ class AccessControlRequest extends StatefulWidget {
 }
 
 class _AccessControlRequestState extends State<AccessControlRequest> {
-  DateTime _lastReload = DateTime.now();
-
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) => _activate());
@@ -54,14 +52,11 @@ class _AccessControlRequestState extends State<AccessControlRequest> {
       future: widget.request(context),
       builder: (_, snap) {
         if (snap.hasData) {
-          return KeyedSubtree(
-            key: ValueKey(_lastReload),
-            child: snap.data == true
-                ? widget.child
-                : widget.denied ?? const SizedBox(),
-          );
+          return snap.data == true
+              ? widget.child
+              : widget.denied ?? const SizedBox();
         } else if (snap.hasError) {
-          throw Exception(snap.error.toString());
+          throw Error.throwWithStackTrace(snap.error!, snap.stackTrace!);
         }
 
         return const SizedBox();
@@ -71,7 +66,7 @@ class _AccessControlRequestState extends State<AccessControlRequest> {
 
   void _listener() {
     if (mounted) {
-      setState(() => _lastReload = DateTime.now());
+      (context as Element).markNeedsBuild();
     }
   }
 

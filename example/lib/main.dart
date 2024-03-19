@@ -190,35 +190,44 @@ class _DemoPageState extends State<DemoPage> {
                   ),
                 ),
               ),
-              AccessControl.permission(
-                permission: RandomPermission(),
-                denied: const Text('false'),
-                child: const Text('true'),
+              _AccessGroup(
+                title: 'Random Permission',
+                child: AccessControl.permission(
+                  permission: RandomPermission(),
+                  denied: const Text('false'),
+                  child: const Text('true'),
+                ),
               ),
-              AccessControl.permissions(
-                predicates: [
-                  Not(
-                    Any([
-                      DeveloperPermission(),
-                      DarkThemePermission(),
-                    ]),
-                  ),
-                  Single(
-                    Reverse(AuthPermission()),
-                  ),
-                ],
-                mode: ControlMode.every,
-                child: const Text('Cool'),
+              _AccessGroup(
+                title: 'Predicade permissions:',
+                child: AccessControl.permissions(
+                  predicates: [
+                    Not(
+                      Any([
+                        DeveloperPermission(),
+                        DarkThemePermission(),
+                      ]),
+                    ),
+                    Single(
+                      Reverse(AuthPermission()),
+                    ),
+                  ],
+                  mode: ControlMode.every,
+                  denied: const Text('Not cool'),
+                  child: const Text('Cool'),
+                ),
               ),
-              AccessControl.every(
-                permissions: [
-                  AuthPermission(),
-                  DeveloperPermission(),
-                  DarkThemePermission(),
-                ],
-                child: Builder(builder: (context) {
-                  return const Text('Developers love dark themes');
-                }),
+              _AccessGroup(
+                title: 'Every permissions:',
+                child: AccessControl.every(
+                  permissions: [
+                    AuthPermission(),
+                    DeveloperPermission(),
+                    DarkThemePermission(),
+                  ],
+                  denied: const Text('Someone doesn\'t like dark themes'),
+                  child: const Text('Developers love dark themes'),
+                ),
               ),
             ],
           ),
@@ -230,6 +239,32 @@ class _DemoPageState extends State<DemoPage> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _AccessGroup extends StatelessWidget {
+  final String title;
+  final Widget child;
+
+  const _AccessGroup({
+    super.key,
+    required this.title,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          title,
+          style: Theme.of(context).textTheme.labelLarge,
+        ),
+        const SizedBox(height: 8),
+        child,
+        const SizedBox(height: 8),
+      ],
     );
   }
 }
